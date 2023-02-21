@@ -18,7 +18,7 @@ const DEBOUNCE_DELAY = 300;
 
 const searchBtn = document.querySelector('#search-box');
 const countryList = document.querySelector('.country-list');
-// // const countryInfo = document.querySelector('.country-info');
+ const countryInfo = document.querySelector('.country-info');
 searchBtn.addEventListener('input', onInputSearch);
 
 // function onInputSearch(e) {
@@ -46,9 +46,9 @@ function fetchCountries(name) {
 
 function onSuccess(country){
    
-       const countries = Object.values(country).forEach(value=> markup(value.name))
+       const countries = Object.values(country).forEach(value=> markup(value.name, value.capital, value.population, value.flags))
        
- 
+
 
 }
 
@@ -56,10 +56,17 @@ function onInputSearch(e) {
   const inputValue = e.target.value;
   fetchCountries(inputValue);
 }
-function markup (name){
+function markup (name, capital, population, flags){
     // const markupList = `
     
     countryList.innerHTML = `
-    <h1>country: ${name}</h1>`;
+    <h1>country: ${name}</h1>
+    `;
+
+    countryInfo.innerHTML = `
+    <p>capital: ${capital}</p>
+    <p>population: ${population}</p>
+    <img arc="${flags}" alt="flag"`
+    
     
 }

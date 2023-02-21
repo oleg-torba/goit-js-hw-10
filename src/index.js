@@ -46,7 +46,8 @@ function fetchCountries(name) {
 
 function onSuccess(country){
    
-       const countries = Object.values(country).forEach(value=> markup(value.name, value.capital, value.population, value.flags))
+       const countries = Object.values(country).forEach(value=> 
+        markup(value.name, value.capital, value.population, value.flags))
        
 
 
@@ -66,7 +67,7 @@ function markup (name, capital, population, flags){
     countryInfo.innerHTML = `
     <p>capital: ${capital}</p>
     <p>population: ${population}</p>
-    <img arc="${flags}" alt="flag"`
+    <img src="${flags.svg}" width="60px" alt="flag">`
     
     
 }

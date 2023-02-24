@@ -1,82 +1,75 @@
-import './css/styles.css';
-// import fetchCountries from './fetchCountries.js';
 import { Notify } from 'notiflix';
+import _ from 'lodash'
 const DEBOUNCE_DELAY = 300;
-// // // const name = countries.name;
-// // // const capital = countries.capital;
-// // // const flags = countries.flags
-
-// // // function countryMark(fields) {
-// // //   countryList.innerHTML =
-// // // }
-
-// // // function onSuccess(countries){
-// // //   markup()
-// // // }
-
-// // fetchCountries()
-
 const searchBtn = document.querySelector('#search-box');
 const countryList = document.querySelector('.country-list');
- const countryInfo = document.querySelector('.country-info');
-searchBtn.addEventListener('input', onInputSearch);
-let inputValue = ""
-// function onInputSearch(e) {
-//   const inputValue = e.target.value.trim();
-// fetchCountries()
-// //   markupArray(inputValue)
-// }
+const countryInfo = document.querySelector('.country-info');
+searchBtn.addEventListener('input', _.debounce(onInputSearch, DEBOUNCE_DELAY));
 
-// // function markupArray(country) {
-// //   const countries = country.forEach(array => {
-// //    console.log(Object.values(array.name))
-
-// //   });
-// // }
-// // function markup(country){
-// //
-// // }
+let inputValue = '';
 
 function fetchCountries(name) {
-  fetch(`https://restcountries.com/v2/name/${name}?fields=name,capital,population,flags,languages`)
+  fetch(
+    `https://restcountries.com/v2/name/${name}?fields=name,capital,population,flags,languages`
+  )
     .then(response => response.json())
-    .then(onSuccess)
-    .catch()
-    
+    .then(onSuccess);
 }
-
-function onSuccess(country){
-   
-       Object.values(country).forEach(value=> 
-        markup(value.name, value.capital, value.population, value.flags))
-       
-        
-
-}
-function markup (name, capital, population, flags){
-    if(inputValue === ""){
-        countryList.innerHTML = "";
-    countryInfo.innerHTML = ""
-    return
-}
-    
-    countryList.innerHTML = `
-    <h1>country: ${name}</h1>
-    `;
-   
+function onInputSearch(e) {
+  const inputValue = e.target.value.trim();
+  clearCountry()
+  fetchCountries(inputValue)
+  .then(onSuccess)
   
 
-    countryInfo.innerHTML = `
-    <p>capital: ${capital}</p>
-    <p>population: ${population}</p>
-    <img src="${flags.svg}" width="60px" alt="flag">`
-    
-    
 }
 
-function onInputSearch(e) {
-inputValue = e.target.value.trim();
-  fetchCountries(inputValue);
 
+function onSuccess(countries){
+  if(countries.length === 1){
+    markup(countries[0])
+  }else if(countries.length <=10){
+    markupCountry(countries)
+  }
+  else{
+    Notify.info("введи більше букв")
+  }
+ 
 }
 
+function markup(country) {
+ Object.values(country.languages).forEach(language=>{
+  
+    const markupCountry =  `
+    <li class="title"><h1>Country: ${country.name}</h1></li>
+     <li class="title"><p>population: ${country.population}</p></li>
+     <li class="title"><p>capital: ${country.capital}</p></li>
+     <img src="${country.flags.svg}" width=40px alt="flag">
+     <li class="title"><p>languages: ${language.name}</p></li>
+     `
+     countryList.innerHTML = markupCountry
+  })
+ 
+
+
+ 
+
+  }
+
+  function markupCountry(countryArray){
+   countryArray.map((e=>{
+    const countriesOne = `
+    <h1>Country: ${e.name}</h1>
+    <img src="${e.flags.svg}" width=40px alt="flag">`
+    
+    countryInfo.innerHTML = countriesOne
+   }))
+  }
+ 
+function clearCountry(){
+  if(inputValue === ''){
+    countryInfo.innerHTML = ''
+    countryList.innerHTML = ''
+  }
+ return
+}

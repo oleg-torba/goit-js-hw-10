@@ -1,5 +1,7 @@
 import { Notify } from 'notiflix';
 import _ from 'lodash'
+import {fetchCountries} from './fetchCountries';
+
 const DEBOUNCE_DELAY = 300;
 const searchBtn = document.querySelector('#search-box');
 const countryList = document.querySelector('.country-list');
@@ -8,68 +10,77 @@ searchBtn.addEventListener('input', _.debounce(onInputSearch, DEBOUNCE_DELAY));
 
 let inputValue = '';
 
-function fetchCountries(name) {
-  fetch(
-    `https://restcountries.com/v2/name/${name}?fields=name,capital,population,flags,languages`
-  )
-    .then(response => response.json())
-    .then(onSuccess);
-}
+
 function onInputSearch(e) {
   const inputValue = e.target.value.trim();
-  clearCountry()
+  clearInput()
   fetchCountries(inputValue)
-  .then(onSuccess)
-  
+    .then(onSuccess)
+
 
 }
 
 
-function onSuccess(countries){
-  if(countries.length === 1){
-    markup(countries[0])
-  }else if(countries.length <=10){
-    markupCountry(countries)
+function onSuccess(country){
+  if(country.length===1){
+    countryInfo.insertAdjacentHTML('beforeend',markupCountryInfo(country)) 
+    countryList.insertAdjacentHTML('beforeend',markupCountryList(country)) 
+  }
+  else if(country.length<=10){
+    countryList.insertAdjacentHTML('beforeend',markupCountryList(country)) 
   }
   else{
-    Notify.info("введи більше букв")
+    error()
   }
  
+
+  
 }
 
-function markup(country) {
- Object.values(country.languages).forEach(language=>{
+
+// function markup(country) {
+
+
+
+
+
+
+
+
+function markupCountryInfo(country){
+ 
+ 
+  const markupCountry = country.map(({population,capital,languages})=>{
+    return `
+   
+    <li class="title"><p>population: ${population}</p></li>
+    <li class="title"><p>capital: ${capital}</p></li>
+    <li class="title"><p>languages: ${Object.values(languages)}</p></li>
+    `
   
-    const markupCountry =  `
-    <li class="title"><h1>Country: ${country.name}</h1></li>
-     <li class="title"><p>population: ${country.population}</p></li>
-     <li class="title"><p>capital: ${country.capital}</p></li>
-     <img src="${country.flags.svg}" width=40px alt="flag">
-     <li class="title"><p>languages: ${language.name}</p></li>
-     `
-     countryList.innerHTML = markupCountry
   })
- 
+return markupCountry
+}
+
+function markupCountryList(country){
+  const markup = country.map(({name,flags})=>{
+    return `
+    <li class="title"><h1>Country: ${name.official}</h1>
 
 
- 
+    <img src="${flags.svg}" width=40px alt="flag"></li>
 
-  }
+    `
+  })
+  return markup
+}
 
-  function markupCountry(countryArray){
-   countryArray.map((e=>{
-    const countriesOne = `
-    <h1>Country: ${e.name}</h1>
-    <img src="${e.flags.svg}" width=40px alt="flag">`
-    
-    countryInfo.innerHTML = countriesOne
-   }))
-  }
- 
-function clearCountry(){
+function clearInput(){
   if(inputValue === ''){
     countryInfo.innerHTML = ''
     countryList.innerHTML = ''
   }
- return
+  return
 }
+
+function error(){Notify.info('too much')}

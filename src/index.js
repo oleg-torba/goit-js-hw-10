@@ -23,7 +23,7 @@ function onSuccess(country) {
   } else if (country.length <= 10) {
     countryList.insertAdjacentHTML('beforeend', markupCountryList(country));
   } 
-  else {
+  else if(country.length >10) {
     error();
   }
 }

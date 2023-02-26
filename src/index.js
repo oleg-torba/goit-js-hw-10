@@ -1,6 +1,6 @@
 import { Notify } from 'notiflix';
-import _ from 'lodash'
-import {fetchCountries} from './fetchCountries';
+import _ from 'lodash';
+import { fetchCountries } from './fetchCountries';
 
 const DEBOUNCE_DELAY = 300;
 const searchBtn = document.querySelector('#search-box');
@@ -10,77 +10,58 @@ searchBtn.addEventListener('input', _.debounce(onInputSearch, DEBOUNCE_DELAY));
 
 let inputValue = '';
 
-
 function onInputSearch(e) {
   const inputValue = e.target.value.trim();
-  clearInput()
-  fetchCountries(inputValue)
-    .then(onSuccess)
-
-
+  clearInput();
+  fetchCountries(inputValue).then(onSuccess);
 }
 
-
-function onSuccess(country){
-  if(country.length===1){
-    countryInfo.insertAdjacentHTML('beforeend',markupCountryInfo(country)) 
-    countryList.insertAdjacentHTML('beforeend',markupCountryList(country)) 
+function onSuccess(country) {
+  if (country.length === 1) {
+    countryInfo.insertAdjacentHTML('beforeend', markupCountryInfo(country));
+    countryList.insertAdjacentHTML('beforeend', markupCountryList(country));
+  } else if (country.length <= 10) {
+    countryList.insertAdjacentHTML('beforeend', markupCountryList(country));
+  } else {
+    error();
   }
-  else if(country.length<=10){
-    countryList.insertAdjacentHTML('beforeend',markupCountryList(country)) 
-  }
-  else{
-    error()
-  }
- 
-
-  
 }
 
-
-// function markup(country) {
-
-
-
-
-
-
-
-
-function markupCountryInfo(country){
- 
- 
-  const markupCountry = country.map(({population,capital,languages})=>{
+function markupCountryInfo(country) {
+  const markupCountry = country.map(({ population, capital, languages }) => {
     return `
    
-    <li class="title"><p>population: ${population}</p></li>
-    <li class="title"><p>capital: ${capital}</p></li>
-    <li class="title"><p>languages: ${Object.values(languages)}</p></li>
-    `
-  
-  })
-return markupCountry
+    <li class="title"><p>Population: ${population}</p></li>
+    <li class="title"><p>Capital: ${capital}</p></li>
+    <li class="title"><p>Language: ${Object.values(languages)}</p></li>
+    `;
+  });
+  return markupCountry;
 }
 
-function markupCountryList(country){
-  const markup = country.map(({name,flags})=>{
+function markupCountryList(country) {
+  const markup = country.map(({ name, flags }) => {
     return `
-    <li class="title"><h1>Country: ${name.official}</h1>
+    <li class="list">
+    <img src="${flags.svg}" width=40px heigth="20px alt="flag">
+    <h1 class="title">${name.official}
+    </h1>
+    
+    </li>
 
-
-    <img src="${flags.svg}" width=40px alt="flag"></li>
-
-    `
-  })
-  return markup
+    `;
+  }).join('');
+  return markup;
 }
 
-function clearInput(){
-  if(inputValue === ''){
-    countryInfo.innerHTML = ''
-    countryList.innerHTML = ''
+function clearInput() {
+  if (inputValue === '') {
+    countryInfo.innerHTML = '';
+    countryList.innerHTML = '';
   }
-  return
+  return;
 }
 
-function error(){Notify.info('too much')}
+function error() {
+  Notify.info('too much');
+}

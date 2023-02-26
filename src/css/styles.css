@@ -11,6 +11,14 @@ body {
   color: #212121;
   line-height: 1.5;
 }
+p{
+  margin: 0;
+}
+
+img{
+  display: block;
+  height: 20px;
+}
 
 #search-box {
   font: inherit;
@@ -22,18 +30,22 @@ body {
 
 .list{
   display: flex;
+  font-size: 18px;
+  font-weight: 600;
   list-style-type: none;
   align-items: center;
+  margin-bottom: 5px;
 }
 .title {
   color: cadetblue;
   font-size: 18px;
-  font-weight: 500;
+  margin: 0px;
   margin-left: 10px;
 }
 
 .country-list{
- padding: 8px;
+ padding: 0px;
+ margin: 0;
 
-  margin-bottom: 16px;
 }
+

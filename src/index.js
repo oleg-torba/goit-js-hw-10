@@ -22,7 +22,8 @@ function onSuccess(country) {
     countryList.insertAdjacentHTML('beforeend', markupCountryList(country));
   } else if (country.length <= 10) {
     countryList.insertAdjacentHTML('beforeend', markupCountryList(country));
-  } else {
+  } 
+  else {
     error();
   }
 }
@@ -31,9 +32,9 @@ function markupCountryInfo(country) {
   const markupCountry = country.map(({ population, capital, languages }) => {
     return `
    
-    <li class="title"><p>Population: ${population}</p></li>
-    <li class="title"><p>Capital: ${capital}</p></li>
-    <li class="title"><p>Language: ${Object.values(languages)}</p></li>
+    <li class="list"><p>Population: <span class="title">${population}</span></p></li>
+    <li class="list"><p>Capital: <span class="title">${capital}</span></p></li>
+    <li class="list"><p>Language: <span class="title">${Object.values(languages)}</span></p></li>
     `;
   });
   return markupCountry;
@@ -44,8 +45,8 @@ function markupCountryList(country) {
     return `
     <li class="list">
     <img src="${flags.svg}" width=40px heigth="20px alt="flag">
-    <h1 class="title">${name.official}
-    </h1>
+    <h2 class="title">${name.official}
+    </h2>
     
     </li>
 

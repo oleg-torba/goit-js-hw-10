@@ -64,5 +64,5 @@ function clearInput() {
 }
 
 function error() {
-  Notify.info('too much');
+  Notify.info('Too many matches found. Please enter a more specific name.');
 }

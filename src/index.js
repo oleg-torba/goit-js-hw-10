@@ -1,19 +1,24 @@
 import { Notify } from 'notiflix';
-import _ from 'lodash';
+import debounce from 'lodash.debounce';
 import { fetchCountries } from './fetchCountries';
 
 const DEBOUNCE_DELAY = 300;
 const searchBtn = document.querySelector('#search-box');
 const countryList = document.querySelector('.country-list');
 const countryInfo = document.querySelector('.country-info');
-searchBtn.addEventListener('input', _.debounce(onInputSearch, DEBOUNCE_DELAY));
+searchBtn.addEventListener('input', debounce(onInputSearch, DEBOUNCE_DELAY));
 
 let inputValue = '';
 
 function onInputSearch(e) {
   const inputValue = e.target.value.trim();
-  clearInput();
-  fetchCountries(inputValue).then(onSuccess);
+
+    clearInput();
+    
+  
+  fetchCountries(inputValue)
+  .then(onSuccess)
+  .catch(fail);
 }
 
 function onSuccess(country) {
@@ -24,7 +29,7 @@ function onSuccess(country) {
     countryList.insertAdjacentHTML('beforeend', markupCountryList(country));
   } 
   else if(country.length >10) {
-    error();
+    tooMuch();
   }
 }
 
@@ -49,20 +54,23 @@ function markupCountryList(country) {
     </h2>
     
     </li>
-
     `;
   }).join('');
   return markup;
 }
 
 function clearInput() {
-  if (inputValue === '') {
+
     countryInfo.innerHTML = '';
     countryList.innerHTML = '';
-  }
-  return;
+  
 }
 
-function error() {
+function tooMuch() {
   Notify.info('Too many matches found. Please enter a more specific name.');
+}
+
+function fail(error){
+  clearInput()
+  Notify.failure(error.message)
 }
